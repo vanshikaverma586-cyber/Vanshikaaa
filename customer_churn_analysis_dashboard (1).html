@@ -1,0 +1,305 @@
+
+<style>
+  body { font-family: var(--font-sans); }
+  .section { margin-bottom: 2rem; }
+  .section-title { font-size: 13px; font-weight: 500; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 12px; }
+  .card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1rem 1.25rem; }
+  .metric-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+  .metric { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: .85rem 1rem; }
+  .metric-label { font-size: 12px; color: var(--color-text-secondary); margin-bottom: 4px; }
+  .metric-value { font-size: 22px; font-weight: 500; color: var(--color-text-primary); }
+  .metric-sub { font-size: 12px; color: var(--color-text-secondary); margin-top: 2px; }
+  .badge { display: inline-block; font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 4px; }
+  .badge-danger { background: var(--color-background-danger); color: var(--color-text-danger); }
+  .badge-success { background: var(--color-background-success); color: var(--color-text-success); }
+  .badge-info { background: var(--color-background-info); color: var(--color-text-info); }
+  .badge-warn { background: var(--color-background-warning); color: var(--color-text-warning); }
+  .chart-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .insight-list { list-style: none; padding: 0; margin: 0; }
+  .insight-list li { display: flex; gap: 10px; padding: 9px 0; border-bottom: 0.5px solid var(--color-border-tertiary); font-size: 14px; line-height: 1.5; color: var(--color-text-primary); }
+  .insight-list li:last-child { border-bottom: none; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 6px; }
+  .dot-danger { background: #E24B4A; }
+  .dot-success { background: #639922; }
+  .dot-info { background: #378ADD; }
+  .dot-warn { background: #BA7517; }
+  .rec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .rec-card { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: .85rem 1rem; border-left: 3px solid; }
+  .rec-card.priority { border-left-color: #E24B4A; }
+  .rec-card.growth { border-left-color: #378ADD; }
+  .rec-card.retention { border-left-color: #639922; }
+  .rec-card.product { border-left-color: #BA7517; }
+  .rec-title { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 4px; }
+  .rec-body { font-size: 12px; color: var(--color-text-secondary); line-height: 1.5; }
+  .resume-box { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 1rem; }
+  .resume-item { display: flex; gap: 8px; font-size: 13px; color: var(--color-text-primary); padding: 5px 0; line-height: 1.55; }
+  .bullet-sym { color: var(--color-text-secondary); flex-shrink: 0; font-weight: 500; }
+  .tabs { display: flex; gap: 4px; margin-bottom: 16px; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .tab { font-size: 13px; padding: 6px 14px; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; color: var(--color-text-secondary); user-select: none; transition: color .15s; }
+  .tab.active { border-bottom-color: var(--color-border-primary); color: var(--color-text-primary); font-weight: 500; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+  .sql-tag { display: inline-block; font-size: 11px; font-family: var(--font-mono); background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); padding: 1px 6px; border-radius: 4px; color: var(--color-text-secondary); margin-right: 4px; }
+</style>
+
+<div style="padding: 1rem 0;">
+
+  <!-- Tab Nav -->
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('overview')">Overview</div>
+    <div class="tab" onclick="switchTab('insights')">Key Insights</div>
+    <div class="tab" onclick="switchTab('recs')">Recommendations</div>
+    <div class="tab" onclick="switchTab('resume')">Resume Bullets</div>
+  </div>
+
+  <!-- OVERVIEW -->
+  <div class="tab-panel active" id="tab-overview">
+    <div class="section">
+      <div class="section-title">Dataset snapshot</div>
+      <div class="metric-grid">
+        <div class="metric">
+          <div class="metric-label">Total customers</div>
+          <div class="metric-value">10</div>
+          <div class="metric-sub">IDs 1001–1010</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Churn rate</div>
+          <div class="metric-value" style="color:#E24B4A">50%</div>
+          <div class="metric-sub">5 of 10 churned</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Avg. tenure</div>
+          <div class="metric-value">8.0</div>
+          <div class="metric-sub">months overall</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Avg. total charges</div>
+          <div class="metric-value">₹31,547</div>
+          <div class="metric-sub">across all customers</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-row section">
+      <div class="card">
+        <div class="section-title">Churn by gender</div>
+        <div style="position:relative;height:180px"><canvas id="c1"></canvas></div>
+        <div style="display:flex;gap:14px;margin-top:10px;font-size:12px;color:var(--color-text-secondary)">
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#E24B4A"></span>Churned</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#639922"></span>Retained</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="section-title">Contract type vs churn</div>
+        <div style="position:relative;height:180px"><canvas id="c2"></canvas></div>
+        <div style="display:flex;gap:14px;margin-top:10px;font-size:12px;color:var(--color-text-secondary)">
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#E24B4A"></span>Churned</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#639922"></span>Retained</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-row section">
+      <div class="card">
+        <div class="section-title">Internet service vs churn</div>
+        <div style="position:relative;height:180px"><canvas id="c3"></canvas></div>
+        <div style="display:flex;gap:14px;margin-top:10px;font-size:12px;color:var(--color-text-secondary)">
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#E24B4A"></span>Churned</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#639922"></span>Retained</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="section-title">Payment method distribution</div>
+        <div style="position:relative;height:180px"><canvas id="c4"></canvas></div>
+        <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;font-size:12px;color:var(--color-text-secondary)">
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#378ADD"></span>UPI</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#BA7517"></span>Cash</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#639922"></span>Credit card</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card section">
+      <div class="section-title">Senior citizen churn risk</div>
+      <div style="display:flex;gap:24px;align-items:center">
+        <div style="flex:1">
+          <div style="margin-bottom:10px;font-size:14px;color:var(--color-text-primary)">Senior citizens (age 65+)</div>
+          <div style="background:var(--color-background-secondary);border-radius:6px;overflow:hidden;height:20px;width:100%">
+            <div style="width:100%;height:100%;background:#E24B4A;opacity:.8;display:flex;align-items:center;padding-left:8px"><span style="font-size:12px;color:#fff;font-weight:500">100% churn (2/2)</span></div>
+          </div>
+        </div>
+        <div style="flex:1">
+          <div style="margin-bottom:10px;font-size:14px;color:var(--color-text-primary)">Non-senior citizens</div>
+          <div style="background:var(--color-background-secondary);border-radius:6px;overflow:hidden;height:20px;width:100%">
+            <div style="width:37.5%;height:100%;background:#639922;opacity:.8;display:flex;align-items:center;padding-left:8px"><span style="font-size:12px;color:#fff;font-weight:500">37.5% churn</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INSIGHTS -->
+  <div class="tab-panel" id="tab-insights">
+    <div class="card section">
+      <div class="section-title">Business insights</div>
+      <ul class="insight-list">
+        <li><div class="dot dot-danger"></div><div><strong>50% churn rate is critically high.</strong> Half the customer base is lost, far above the 5–7% industry benchmark. Immediate retention strategies are non-negotiable.</div></li>
+        <li><div class="dot dot-danger"></div><div><strong>Senior citizens (67–68) show 100% churn.</strong> Both senior customers (IDs 1006, 1010) churned. Age-specific onboarding, pricing, or support may be completely absent.</div></li>
+        <li><div class="dot dot-warn"></div><div><strong>Monthly contracts drive churn.</strong> 3 of 5 monthly-contract customers churned vs 2 of 5 yearly. Monthly plans offer low commitment and make switching easy — a structural vulnerability.</div></li>
+        <li><div class="dot dot-danger"></div><div><strong>Fibre internet users churn more.</strong> 4 of 6 fibre customers churned (67%) versus 1 of 4 DLF customers (25%). This signals possible service quality or pricing issues with the fibre offering.</div></li>
+        <li><div class="dot dot-info"></div><div><strong>UPI is the dominant payment method (5/10) yet carries mixed churn.</strong> 3 of 5 UPI users churned. Since UPI users are auto-pay capable, poor service — not payment friction — is likely the churn driver.</div></li>
+        <li><div class="dot dot-success"></div><div><strong>High-tenure customers (11–12 months) are split.</strong> Both a retained and churned customer have high tenure, suggesting loyalty programs aren't in place to lock in long-term users.</div></li>
+        <li><div class="dot dot-warn"></div><div><strong>High charges don't prevent churn.</strong> Customer 1003 (₹56,470 charges) churned. Revenue size alone isn't a retention factor — value perception matters more.</div></li>
+        <li><div class="dot dot-info"></div><div><strong>Gender is not a significant churn predictor here.</strong> Male churn: 3/6 (50%), Female churn: 2/4 (50%) — exactly equal. Segment-specific interventions by gender are not warranted.</div></li>
+      </ul>
+    </div>
+
+    <div class="card section">
+      <div class="section-title">SQL queries used</div>
+      <ul class="insight-list">
+        <li><div class="dot dot-info"></div><div><span class="sql-tag">GROUP BY</span> Gender count segmentation — revealed balanced gender split (6M / 4F).</div></li>
+        <li><div class="dot dot-info"></div><div><span class="sql-tag">HAVING min &gt; 30K</span> Filtered high-spend customers: IDs 1003, 1008, 1009, 1010 all had charges above ₹30,000.</div></li>
+        <li><div class="dot dot-info"></div><div><span class="sql-tag">AVG Tenure HAVING &gt;9</span> Female customers averaged 9+ months tenure — indicating slightly longer female loyalty on average.</div></li>
+        <li><div class="dot dot-info"></div><div><span class="sql-tag">ORDER BY</span> Sorted by Internet service and gender/payment — exposed fibre-heavy distribution and UPI prevalence.</div></li>
+        <li><div class="dot dot-info"></div><div><span class="sql-tag">BETWEEN 25–40</span> Age filter showed the active working-age segment contains most customers (7 of 10 fall in this range).</div></li>
+        <li><div class="dot dot-info"></div><div><span class="sql-tag">VIEW</span> Created "raj" view isolating Credit Card users — 2 customers, neither churned, suggesting card users are more committed.</div></li>
+        <li><div class="dot dot-info"></div><div><span class="sql-tag">PROCEDURE cyan</span> Returned total charges by gender for billing analysis. <span class="sql-tag">PROCEDURE hype</span> Returned churn status for all fibre customers — confirmed high fibre churn.</div></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- RECOMMENDATIONS -->
+  <div class="tab-panel" id="tab-recs">
+    <div class="rec-grid section">
+      <div class="rec-card priority">
+        <div class="rec-title">Prioritise senior citizen retention</div>
+        <div class="rec-body">Introduce dedicated senior plans with simplified billing, dedicated helplines, and discounted rates. 100% churn in this segment represents complete service-market mismatch.</div>
+      </div>
+      <div class="rec-card priority">
+        <div class="rec-title">Fix fibre service quality</div>
+        <div class="rec-body">With 67% churn among fibre users, conduct immediate NPS surveys. Investigate whether pricing, speed delivery, or support quality is the root cause.</div>
+      </div>
+      <div class="rec-card growth">
+        <div class="rec-title">Incentivise yearly contracts</div>
+        <div class="rec-body">Offer 10–15% discounts or free upgrades for customers switching from monthly to yearly plans. Lock-in reduces churn window significantly.</div>
+      </div>
+      <div class="rec-card retention">
+        <div class="rec-title">Build a loyalty programme</div>
+        <div class="rec-body">High-tenure customers with 9–12 months should receive loyalty rewards, early feature access, or cashback. Currently there is zero mechanism to reward loyalty.</div>
+      </div>
+      <div class="rec-card product">
+        <div class="rec-title">Monitor high-value churners early</div>
+        <div class="rec-body">Customer 1003 paid ₹56,470 and still left. Flag customers with charges above ₹40K for proactive outreach 60 days before renewal.</div>
+      </div>
+      <div class="rec-card growth">
+        <div class="rec-title">Expand DLF internet offering</div>
+        <div class="rec-body">DLF customers churn at only 25%. Analyse what makes this service stickier and replicate those attributes in the fibre product line.</div>
+      </div>
+    </div>
+
+    <div class="card section">
+      <div class="section-title">Final results summary</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+        <div style="text-align:center;padding:.75rem;background:var(--color-background-secondary);border-radius:var(--border-radius-md)">
+          <div style="font-size:11px;color:var(--color-text-secondary);margin-bottom:4px">Highest risk segment</div>
+          <div style="font-size:14px;font-weight:500;color:var(--color-text-danger)">Senior + Fibre + Monthly</div>
+        </div>
+        <div style="text-align:center;padding:.75rem;background:var(--color-background-secondary);border-radius:var(--border-radius-md)">
+          <div style="font-size:11px;color:var(--color-text-secondary);margin-bottom:4px">Safest segment</div>
+          <div style="font-size:14px;font-weight:500;color:var(--color-text-success)">Non-senior + DLF + Yearly</div>
+        </div>
+        <div style="text-align:center;padding:.75rem;background:var(--color-background-secondary);border-radius:var(--border-radius-md)">
+          <div style="font-size:11px;color:var(--color-text-secondary);margin-bottom:4px">Top action</div>
+          <div style="font-size:14px;font-weight:500;color:var(--color-text-info)">Migrate monthly → yearly</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESUME -->
+  <div class="tab-panel" id="tab-resume">
+    <div class="card section">
+      <div class="section-title">Resume bullet points — Data Analyst</div>
+      <div class="resume-box">
+        <div class="resume-item"><span class="bullet-sym">▸</span><span>Designed and implemented a relational customer churn database in MySQL, modelling 10 attributes including contract type, tenure, internet service, and payment method across 10 customer records.</span></div>
+        <div class="resume-item"><span class="bullet-sym">▸</span><span>Performed exploratory data analysis using SQL aggregations (GROUP BY, HAVING, AVG, MIN) to uncover a 50% overall churn rate and identify a 100% churn rate among senior citizens.</span></div>
+        <div class="resume-item"><span class="bullet-sym">▸</span><span>Built reusable SQL Views and Stored Procedures (cyan, hype, raj) to automate segment-level reporting on billing, fibre churn, and credit card user behaviour.</span></div>
+        <div class="resume-item"><span class="bullet-sym">▸</span><span>Identified that fibre internet subscribers churned at 67% vs 25% for DLF users, surfacing a critical product-market fit issue for the fibre offering.</span></div>
+        <div class="resume-item"><span class="bullet-sym">▸</span><span>Analysed contract type impact on churn: monthly contract customers exhibited 60% churn vs 40% for yearly subscribers, directly informing a contract migration recommendation.</span></div>
+        <div class="resume-item"><span class="bullet-sym">▸</span><span>Conducted multi-dimensional segmentation using Python (pandas) to profile customers by salary, profession, age, and city — enabling cross-dataset aggregation and max/sum analysis via groupby.</span></div>
+        <div class="resume-item"><span class="bullet-sym">▸</span><span>Delivered actionable business recommendations including senior-specific pricing plans, a loyalty programme for 9+ month tenured users, and proactive outreach for customers with charges exceeding ₹40,000.</span></div>
+        <div class="resume-item"><span class="bullet-sym">▸</span><span>Demonstrated end-to-end data workflow: schema design → SQL querying → Python ETL (pandas DataFrames from Excel) → business insight extraction — replicating a real-world analyst pipeline.</span></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+function switchTab(id) {
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  const tabs = ['overview','insights','recs','resume'];
+  document.querySelectorAll('.tab')[tabs.indexOf(id)].classList.add('active');
+  document.getElementById('tab-'+id).classList.add('active');
+}
+
+const isDark = matchMedia('(prefers-color-scheme: dark)').matches;
+const gridColor = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)';
+const textColor = isDark ? '#c2c0b6' : '#5F5E5A';
+
+const baseOpts = {
+  responsive: true, maintainAspectRatio: false,
+  plugins: { legend: { display: false } },
+  scales: {
+    x: { grid: { color: gridColor }, ticks: { color: textColor, font: { size: 11 } } },
+    y: { grid: { color: gridColor }, ticks: { color: textColor, font: { size: 11 }, stepSize: 1 } }
+  }
+};
+
+new Chart(document.getElementById('c1'), {
+  type: 'bar',
+  data: {
+    labels: ['Male', 'Female'],
+    datasets: [
+      { label: 'Churned', data: [3, 2], backgroundColor: '#E24B4A' },
+      { label: 'Retained', data: [3, 2], backgroundColor: '#639922' }
+    ]
+  },
+  options: { ...baseOpts, scales: { ...baseOpts.scales, y: { ...baseOpts.scales.y, max: 4 } } }
+});
+
+new Chart(document.getElementById('c2'), {
+  type: 'bar',
+  data: {
+    labels: ['Monthly', 'Yearly'],
+    datasets: [
+      { label: 'Churned', data: [3, 2], backgroundColor: '#E24B4A' },
+      { label: 'Retained', data: [2, 3], backgroundColor: '#639922' }
+    ]
+  },
+  options: { ...baseOpts, scales: { ...baseOpts.scales, y: { ...baseOpts.scales.y, max: 4 } } }
+});
+
+new Chart(document.getElementById('c3'), {
+  type: 'bar',
+  data: {
+    labels: ['Fibre', 'DLF'],
+    datasets: [
+      { label: 'Churned', data: [4, 1], backgroundColor: '#E24B4A' },
+      { label: 'Retained', data: [2, 3], backgroundColor: '#639922' }
+    ]
+  },
+  options: { ...baseOpts, scales: { ...baseOpts.scales, y: { ...baseOpts.scales.y, max: 5 } } }
+});
+
+new Chart(document.getElementById('c4'), {
+  type: 'doughnut',
+  data: {
+    labels: ['UPI', 'Cash', 'Credit card'],
+    datasets: [{ data: [5, 2, 2], backgroundColor: ['#378ADD', '#BA7517', '#639922'], borderWidth: 0 }]
+  },
+  options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+});
+</script>
