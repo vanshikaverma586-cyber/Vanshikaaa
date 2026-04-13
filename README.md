@@ -8,6 +8,9 @@
 
 ## 🛠 My Skills
 ![Python](https://img.shields.io/badge/-Python-3776AB?style=flat&logo=python&logoColor=white)
+[SQL]
+[EXCEL]
+[DATA VISUALIZATION LIKE IN POWER BI]
 
 ## 📊 My GitHub Stats
 ![Stats](https://github-readme-stats.vercel.app/api?username=vanshikaverma586&show_icons=true&theme=radical)
